@@ -1,0 +1,1 @@
+Liegen ignoriert unter ./build/inplaceWebapp/data/photos
