@@ -75,7 +75,7 @@ In Visual Studio Code:
 
 In IntelliJ IDEA:
 
-<img src="intellij-debug.png" width="256" title="Intellij Debugging">
+<img src="intelliJ-debug.png" width="256" title="Intellij Debugging">
 
 
 ### Run Wahlzeit inside a Docker container
