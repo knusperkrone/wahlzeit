@@ -28,13 +28,13 @@ import org.wahlzeit.services.*;
 /**
  * Sets up a fresh clean Wahlzeit Flowers application database.
  */
-public class SetUpFlowers extends ScriptMain {
+public class SetUpScreenshots extends ScriptMain {
 
 	/**
 	 * 
 	 */
 	public static void main(String[] argv) {
-		new SetUpFlowers().run(argv);
+		new SetUpScreenshots().run(argv);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class SetUpFlowers extends ScriptMain {
 	 * 
 	 */
 	public void execute() throws Exception {
-		String photoDir = SysConfig.getRootDirAsString() + File.separator + "config" + File.separator + "flowers";
+		String photoDir = SysConfig.getRootDirAsString() + File.separator + "config" + File.separator + "screenshots";
 		createUser("commons", "commons", "commons@wahlzeit.org", photoDir);
 	}
 
