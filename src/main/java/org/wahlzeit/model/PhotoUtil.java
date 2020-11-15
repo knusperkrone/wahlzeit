@@ -36,8 +36,8 @@ public class PhotoUtil {
 	/**
 	 * 
 	 */
-	public static Photo createPhoto(File source, PhotoId id) throws Exception {
-		Photo result = PhotoFactory.getInstance().createPhoto(id);
+	public static Photo createPhoto(File source, PhotoId id, LocationId locationId) throws Exception {
+		Photo result = PhotoFactory.getInstance().createPhoto(id, locationId);
 		
 		Image sourceImage = createImageFiles(source, id);
 

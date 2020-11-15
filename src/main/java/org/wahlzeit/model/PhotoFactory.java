@@ -81,8 +81,8 @@ public class PhotoFactory {
 	/**
 	 * 
 	 */
-	public Photo createPhoto(PhotoId id) {
-		return new Photo(id);
+	public Photo createPhoto(PhotoId id, LocationId lId) {
+		return new Photo(id, lId);
 	}
 	
 	/**

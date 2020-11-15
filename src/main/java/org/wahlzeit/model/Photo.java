@@ -20,11 +20,15 @@
 
 package org.wahlzeit.model;
 
-import java.sql.*;
-import java.net.*;
+import org.wahlzeit.services.DataObject;
+import org.wahlzeit.services.EmailAddress;
+import org.wahlzeit.services.Language;
+import org.wahlzeit.utils.StringUtil;
 
-import org.wahlzeit.services.*;
-import org.wahlzeit.utils.*;
+import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * A photo represents a user-provided (uploaded) photo.
@@ -61,6 +65,11 @@ public class Photo extends DataObject {
 	 * 
 	 */
 	protected PhotoId id = null;
+
+	/**
+	 *
+	 */
+	protected Location location = null;
 	
 	/**
 	 * 
@@ -110,16 +119,17 @@ public class Photo extends DataObject {
 	public Photo() {
 		id = PhotoId.getNextId();
 		incWriteCount();
+		location = new Location();
 	}
 	
 	/**
 	 * 
 	 * @methodtype constructor
 	 */
-	public Photo(PhotoId myId) {
+	public Photo(PhotoId myId, LocationId locationId) {
 		id = myId;
-		
 		incWriteCount();
+		location = new Location(locationId);
 	}
 	
 	/**
@@ -143,6 +153,7 @@ public class Photo extends DataObject {
 	 */
 	public void readFrom(ResultSet rset) throws SQLException {
 		id = PhotoId.getIdFromInt(rset.getInt("id"));
+		location = new Location(LocationId.getIdFromInt(rset.getInt("location_id")), rset);
 
 		ownerId = rset.getInt("owner_id");
 		ownerName = rset.getString("owner_name");
@@ -171,6 +182,7 @@ public class Photo extends DataObject {
 	 */
 	public void writeOn(ResultSet rset) throws SQLException {
 		rset.updateInt("id", id.asInt());
+		rset.updateInt("location_id", location.getId().asInt());
 		rset.updateInt("owner_id", ownerId);
 		rset.updateString("owner_name", ownerName);
 		rset.updateBoolean("owner_notify_about_praise", ownerNotifyAboutPraise);
@@ -208,7 +220,15 @@ public class Photo extends DataObject {
 	public int getOwnerId() {
 		return ownerId;
 	}
-	
+
+	/**
+	 *
+	 * @methodtype get
+	 */
+	public Location getLocation() {
+		return location;
+	}
+
 	/**
 	 * 
 	 * @methodtype set
@@ -364,7 +384,7 @@ public class Photo extends DataObject {
 	public int getThumbHeight() {
 		return isWiderThanHigher() ? (height * MAX_THUMB_PHOTO_WIDTH / width) : MAX_THUMB_PHOTO_HEIGHT;
 	}
-	
+
 	/**
 	 * 
 	 * @methodtype set

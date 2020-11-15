@@ -15,9 +15,17 @@ CREATE TABLE users (
 	creation_time bigint
 );
 
+CREATE TABLE locations (
+	id integer PRIMARY KEY,
+	x float,
+	y float,
+	z float
+);
+
 CREATE TABLE photos (
 	id integer PRIMARY KEY,
 	owner_id integer REFERENCES users(id),
+	location_id integer REFERENCES locations(id),
 	owner_name text,
 	owner_notify_about_praise boolean,
 	owner_email_address text,
@@ -52,12 +60,13 @@ CREATE TABLE globals (
 	id integer PRIMARY KEY,
 	last_user_id integer,
 	last_photo_id integer,
+	last_location_id integer,
 	last_case_id integer,
 	last_session_id integer
 );
 
-INSERT INTO globals (id, last_user_id, last_photo_id, last_case_id, last_session_id)
-	VALUES (0, 1, 0, 0, 0);
+INSERT INTO globals (id, last_user_id, last_photo_id, last_location_id, last_case_id, last_session_id)
+	VALUES (0, 1, 1, 0, 0, 0);
 
 INSERT INTO users (id, name, name_as_tag, email_address, "password", rights, status)
 	VALUES (1, 'admin', 'admin', 'root@localhost', 'admin', 4, 1);

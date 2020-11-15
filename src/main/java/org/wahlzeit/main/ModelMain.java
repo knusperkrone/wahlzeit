@@ -127,6 +127,9 @@ public abstract class ModelMain extends AbstractMain {
 			int lastPhotoId = result.getInt("last_photo_id");
 			PhotoId.setCurrentIdFromInt(lastPhotoId);
 			SysLog.logSysInfo("loaded global variable lastPhotoId: " + lastPhotoId);
+			int lastLocationId =result.getInt("last_location_id");
+			LocationId.setCurrentIdFromInt(lastLocationId);
+			SysLog.logSysInfo("loaded global variable lastLocationId: " + lastLocationId);
 			int lastCaseId = result.getInt("last_case_id");
 			Case.setLastCaseId(new CaseId(lastCaseId));
 			SysLog.logSysInfo("loaded global variable lastCaseId: " + lastCaseId);

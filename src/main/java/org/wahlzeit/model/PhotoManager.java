@@ -20,20 +20,25 @@
 
 package org.wahlzeit.model;
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
+import org.wahlzeit.main.ServiceMain;
+import org.wahlzeit.services.ObjectManager;
+import org.wahlzeit.services.Persistent;
+import org.wahlzeit.services.SysLog;
 
-import org.wahlzeit.main.*;
-import org.wahlzeit.services.*;
+import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A photo manager provides access to and manages photos.
  */
 public class PhotoManager extends ObjectManager {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected static final PhotoManager instance = new PhotoManager();
 
@@ -41,54 +46,54 @@ public class PhotoManager extends ObjectManager {
 	 * In-memory cache for photos
 	 */
 	protected Map<PhotoId, Photo> photoCache = new HashMap<PhotoId, Photo>();
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected PhotoTagCollector photoTagCollector = null;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public static final PhotoManager getInstance() {
 		return instance;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public static final boolean hasPhoto(String id) {
 		return hasPhoto(PhotoId.getIdFromString(id));
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public static final boolean hasPhoto(PhotoId id) {
 		return getPhoto(id) != null;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public static final Photo getPhoto(String id) {
 		return getPhoto(PhotoId.getIdFromString(id));
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public static final Photo getPhoto(PhotoId id) {
 		return instance.getPhotoFromId(id);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public PhotoManager() {
 		photoTagCollector = PhotoFactory.getInstance().createPhotoTagCollector();
 	}
-	
+
 	/**
 	 * @methodtype boolean-query
 	 * @methodproperties primitive
@@ -96,9 +101,9 @@ public class PhotoManager extends ObjectManager {
 	protected boolean doHasPhoto(PhotoId id) {
 		return photoCache.containsKey(id);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public Photo getPhotoFromId(PhotoId id) {
 		if (id.isNullId()) {
@@ -106,10 +111,10 @@ public class PhotoManager extends ObjectManager {
 		}
 
 		Photo result = doGetPhotoFromId(id);
-		
+
 		if (result == null) {
 			try {
-				PreparedStatement stmt = getReadingStatement("SELECT * FROM photos WHERE id = ?");
+				PreparedStatement stmt = getReadingStatement("SELECT * FROM photos as p JOIN locations as l ON l.id = p.location_id WHERE p.id = ?");
 				result = (Photo) readObject(stmt, id.asInt());
 			} catch (SQLException sex) {
 				SysLog.logThrowable(sex);
@@ -118,10 +123,10 @@ public class PhotoManager extends ObjectManager {
 				doAddPhoto(result);
 			}
 		}
-		
+
 		return result;
 	}
-		
+
 	/**
 	 * @methodtype get
 	 * @methodproperties primitive
@@ -129,14 +134,14 @@ public class PhotoManager extends ObjectManager {
 	protected Photo doGetPhotoFromId(PhotoId id) {
 		return photoCache.get(id);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected Photo createObject(ResultSet rset) throws SQLException {
 		return PhotoFactory.getInstance().createPhoto(rset);
 	}
-	
+
 	/**
 	 * @methodtype command
 	 *
@@ -144,18 +149,22 @@ public class PhotoManager extends ObjectManager {
 	 */
 	public void addPhoto(Photo photo) {
 		PhotoId id = photo.getId();
+		LocationId locationId = photo.location.getId();
 		assertIsNewPhoto(id);
 		doAddPhoto(photo);
 
 		try {
-			PreparedStatement stmt = getReadingStatement("INSERT INTO photos(id) VALUES(?)");
+			PreparedStatement stmt = getReadingStatement("INSERT INTO locations(id) VALUES(?)");
+			createObject(photo.location, stmt, locationId.asInt());
+
+			stmt = getReadingStatement("INSERT INTO photos(id) VALUES(?)");
 			createObject(photo, stmt, id.asInt());
 			ServiceMain.getInstance().saveGlobals();
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
 	}
-	
+
 	/**
 	 * @methodtype command
 	 * @methodproperties primitive
@@ -169,7 +178,7 @@ public class PhotoManager extends ObjectManager {
 	 */
 	public void loadPhotos(Collection<Photo> result) {
 		try {
-			PreparedStatement stmt = getReadingStatement("SELECT * FROM photos");
+			PreparedStatement stmt = getReadingStatement("SELECT * FROM photos as p JOIN locations as l ON l.id = p.location_id");
 			readObjects(result, stmt);
 			for (Iterator<Photo> i = result.iterator(); i.hasNext(); ) {
 				Photo photo = i.next();
@@ -182,34 +191,41 @@ public class PhotoManager extends ObjectManager {
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
-		
+
 		SysLog.logSysInfo("loaded all photos");
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public void savePhoto(Photo photo) {
 		try {
-			PreparedStatement stmt = getUpdatingStatement("SELECT * FROM photos WHERE id = ?");
+			PreparedStatement stmt = getUpdatingStatement("SELECT * FROM locations WHERE id = ?");
+			updateObject(photo.location, stmt);
+
+			stmt = getUpdatingStatement("SELECT * FROM photos WHERE id = ?");
 			updateObject(photo, stmt);
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public void savePhotos() {
 		try {
-			PreparedStatement stmt = getUpdatingStatement("SELECT * FROM photos WHERE id = ?");
+		    List<Location> locs = photoCache.values().stream().map(Photo::getLocation).collect(Collectors.toList());
+            PreparedStatement stmt = getUpdatingStatement("SELECT * FROM locations WHERE id = ?");
+            updateObjects(locs, stmt);
+
+			stmt = getUpdatingStatement("SELECT * FROM photos WHERE id = ?");
 			updateObjects(photoCache.values(), stmt);
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
 	}
-	
+
 	/**
 	 * @methodtype command
 	 *
@@ -219,25 +235,25 @@ public class PhotoManager extends ObjectManager {
 	public Set<Photo> findPhotosByOwner(String ownerName) {
 		Set<Photo> result = new HashSet<Photo>();
 		try {
-			PreparedStatement stmt = getReadingStatement("SELECT * FROM photos WHERE owner_name = ?");
+			PreparedStatement stmt = getReadingStatement("SELECT * FROM photos as p JOIN locations as l ON l.id = p.location_id  WHERE p.owner_name = ?");
 			readObjects(result, stmt, ownerName);
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
-		
+
 		for (Iterator<Photo> i = result.iterator(); i.hasNext(); ) {
 			doAddPhoto(i.next());
 		}
 
 		return result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public Photo getVisiblePhoto(PhotoFilter filter) {
 		Photo result = getPhotoFromFilter(filter);
-		
+
 		if(result == null) {
 			java.util.List<PhotoId> list = getFilteredPhotoIds(filter);
 			filter.setDisplayablePhotoIds(list);
@@ -246,9 +262,9 @@ public class PhotoManager extends ObjectManager {
 
 		return result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected Photo getPhotoFromFilter(PhotoFilter filter) {
 		PhotoId id = filter.getRandomDisplayablePhotoId();
@@ -260,12 +276,12 @@ public class PhotoManager extends ObjectManager {
 				filter.addProcessedPhoto(result);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected java.util.List<PhotoId> getFilteredPhotoIds(PhotoFilter filter) {
 		java.util.List<PhotoId> result = new LinkedList<PhotoId>();
@@ -278,7 +294,7 @@ public class PhotoManager extends ObjectManager {
 			for (int i = 0; i < noFilterConditions; i++) {
 				stmt.setString(i + 1, filterConditions.get(i));
 			}
-			
+
 			SysLog.logQuery(stmt);
 			ResultSet rset = stmt.executeQuery();
 
@@ -299,12 +315,12 @@ public class PhotoManager extends ObjectManager {
 		} catch (SQLException sex) {
 			SysLog.logThrowable(sex);
 		}
-		
+
 		return result;
 	}
-		
+
 	/**
-	 * 
+	 *
 	 */
 	protected PreparedStatement getUpdatingStatementFromConditions(int no) throws SQLException {
 		String query = "SELECT * FROM tags";
@@ -318,19 +334,19 @@ public class PhotoManager extends ObjectManager {
 			}
 			query += " (tag = ?)";
 		}
-		
+
 		return getUpdatingStatement(query);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected void updateDependents(Persistent obj) throws SQLException {
 		Photo photo = (Photo) obj;
-		
+
 		PreparedStatement stmt = getReadingStatement("DELETE FROM tags WHERE photo_id = ?");
 		deleteObject(obj, stmt);
-		
+
 		stmt = getReadingStatement("INSERT INTO tags VALUES(?, ?)");
 		Set<String> tags = new HashSet<String>();
 		photoTagCollector.collect(tags, photo);
@@ -342,17 +358,18 @@ public class PhotoManager extends ObjectManager {
 			stmt.executeUpdate();					
 		}
 	}
-		
+
 	/**
-	 * 
+	 *
 	 */
 	public Photo createPhoto(File file) throws Exception {
 		PhotoId id = PhotoId.getNextId();
-		Photo result = PhotoUtil.createPhoto(file, id);
+		LocationId locationId = LocationId.getNextId();
+		Photo result = PhotoUtil.createPhoto(file, id, locationId);
 		addPhoto(result);
 		return result;
 	}
-	
+
 	/**
 	 * @methodtype assertion
 	 */
