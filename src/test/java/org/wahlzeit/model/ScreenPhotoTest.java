@@ -9,8 +9,8 @@ public class ScreenPhotoTest {
     @Test
     public void testConstructor() {
         // Prepare
-        PhotoId expectedId = PhotoId.getRandomId();
-        LocationId expectedLocId = LocationId.getRandomId();
+        PhotoId expectedId = PhotoId.getNextId();
+        LocationId expectedLocId = LocationId.getNextId();
 
         // Execute
         ScreenPhoto photo = new ScreenPhoto(expectedId, expectedLocId);
