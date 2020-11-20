@@ -35,12 +35,12 @@ import java.util.stream.Collectors;
 /**
  * A photo manager provides access to and manages photos.
  */
-public class PhotoManager extends ObjectManager {
+public abstract class PhotoManager<T extends Photo> extends ObjectManager {
 
 	/**
 	 *
 	 */
-	protected static final PhotoManager instance = new PhotoManager();
+	protected static ScreenPhotoManager instance;
 
 	/**
 	 * In-memory cache for photos
@@ -55,7 +55,10 @@ public class PhotoManager extends ObjectManager {
 	/**
 	 *
 	 */
-	public static final PhotoManager getInstance() {
+	public static ScreenPhotoManager getInstance() {
+		if (instance == null) {
+			instance = new ScreenPhotoManager();
+		}
 		return instance;
 	}
 
@@ -93,6 +96,8 @@ public class PhotoManager extends ObjectManager {
 	public PhotoManager() {
 		photoTagCollector = PhotoFactory.getInstance().createPhotoTagCollector();
 	}
+
+	abstract PhotoFactory<T> getPhotoFactory();
 
 	/**
 	 * @methodtype boolean-query
@@ -355,7 +360,7 @@ public class PhotoManager extends ObjectManager {
 			stmt.setString(1, tag);
 			stmt.setInt(2, photo.getId().asInt());
 			SysLog.logQuery(stmt);
-			stmt.executeUpdate();					
+			stmt.executeUpdate();
 		}
 	}
 
@@ -365,7 +370,7 @@ public class PhotoManager extends ObjectManager {
 	public Photo createPhoto(File file) throws Exception {
 		PhotoId id = PhotoId.getNextId();
 		LocationId locationId = LocationId.getNextId();
-		Photo result = PhotoUtil.createPhoto(file, id, locationId);
+		Photo result = PhotoUtil.createPhoto(getPhotoFactory(), file, id, locationId);
 		addPhoto(result);
 		return result;
 	}

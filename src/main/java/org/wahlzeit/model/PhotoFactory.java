@@ -27,20 +27,20 @@ import org.wahlzeit.services.*;
 /**
  * An Abstract Factory for creating photos and related objects.
  */
-public class PhotoFactory {
+public abstract class PhotoFactory<T extends Photo> {
 	
 	/**
 	 * Hidden singleton instance; needs to be initialized from the outside.
 	 */
-	private static PhotoFactory instance = null;
+	private static PhotoFactory<ScreenPhoto> instance = null;
 	
 	/**
 	 * Public singleton access method.
 	 */
-	public static synchronized PhotoFactory getInstance() {
+	public static synchronized PhotoFactory<ScreenPhoto> getInstance() {
 		if (instance == null) {
 			SysLog.logSysInfo("setting generic PhotoFactory");
-			setInstance(new PhotoFactory());
+			setInstance(new ScreenPhotoFactory());
 		}
 		
 		return instance;
@@ -49,7 +49,7 @@ public class PhotoFactory {
 	/**
 	 * Method to set the singleton instance of PhotoFactory.
 	 */
-	protected static synchronized void setInstance(PhotoFactory photoFactory) {
+	protected static synchronized void setInstance(PhotoFactory<ScreenPhoto> photoFactory) {
 		if (instance != null) {
 			throw new IllegalStateException("attempt to initialize PhotoFactory twice");
 		}
@@ -74,16 +74,12 @@ public class PhotoFactory {
 	/**
 	 * @methodtype factory
 	 */
-	public Photo createPhoto() {
-		return new Photo();
-	}
+	public abstract T createPhoto();
 	
 	/**
 	 * 
 	 */
-	public Photo createPhoto(PhotoId id, LocationId lId) {
-		return new Photo(id, lId);
-	}
+	public abstract T createPhoto(PhotoId id, LocationId lId);
 	
 	/**
 	 * 
