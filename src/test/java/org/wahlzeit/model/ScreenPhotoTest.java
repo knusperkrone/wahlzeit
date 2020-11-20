@@ -16,7 +16,7 @@ public class ScreenPhotoTest {
         ScreenPhoto photo = new ScreenPhoto(expectedId, expectedLocId);
 
         // Validate
-        assertEquals(expectedId, photo.getId());
+        assertEquals(expectedId.asInt(), photo.getId().asInt());
         assertEquals(expectedLocId.asInt(), photo.getLocation().getId().asInt());
     }
 }
