@@ -13,12 +13,12 @@ public class Location extends DataObject {
 
     public Location() {
         this.id = LocationId.getNextId();
-        coordinate = new Coordinate(0.0, 0.0, 0.0);
+        coordinate = new CartesianCoordinate(0.0, 0.0, 0.0);
     }
 
     public Location(LocationId locationId) {
         this.id = locationId;
-        coordinate = new Coordinate(0.0, 0.0, 0.0);
+        coordinate = new CartesianCoordinate(0.0, 0.0, 0.0);
     }
 
     public Location(LocationId locationId, ResultSet rset) throws SQLException {
@@ -41,15 +41,16 @@ public class Location extends DataObject {
         double x = rset.getDouble("x");
         double y = rset.getDouble("y");
         double z = rset.getDouble("z");
-        coordinate = new Coordinate(x, y, z);
+        coordinate = new CartesianCoordinate(x, y, z);
     }
 
     @Override
     public void writeOn(ResultSet rset) throws SQLException {
+        CartesianCoordinate cartesianCoordinate = coordinate.asCartesianCoordinate();
         rset.updateInt("id", id.asInt());
-        rset.updateDouble("x", coordinate.getX());
-        rset.updateDouble("y", coordinate.getY());
-        rset.updateDouble("z", coordinate.getZ());
+        rset.updateDouble("x", cartesianCoordinate.getX());
+        rset.updateDouble("y", cartesianCoordinate.getY());
+        rset.updateDouble("z", cartesianCoordinate.getZ());
     }
 
     @Override
