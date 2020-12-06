@@ -8,21 +8,25 @@ public abstract class Coordinate {
      * Template methods
      */
 
-    public abstract CartesianCoordinate asCartesianCoordinate();
+    protected abstract CartesianCoordinate doAsCartesianCoordinate();
 
-    public abstract SphericCoordinate asSphericCoordinate();
+    protected abstract SphericCoordinate doAsSphericCoordinate();
 
-    public abstract boolean isEquals(Coordinate coordinate);
+    protected abstract boolean doIsEquals(Coordinate coordinate);
+
+    protected abstract boolean doAssertValid();
 
     /*
      * Business methods
      */
 
     public double getCartesianDistance(Coordinate coordinate) {
+        assertValidCoordinate(coordinate);
         return asCartesianCoordinate().doGetCartesianDistance(coordinate);
     }
 
     public double getCentralAngle(Coordinate coordinate) {
+        assertValidCoordinate(coordinate);
         return asSphericCoordinate().doGetCentralAngle(coordinate);
     }
 
@@ -34,4 +38,37 @@ public abstract class Coordinate {
         return false;
     }
 
+    public CartesianCoordinate asCartesianCoordinate() {
+        CartesianCoordinate transformed = doAsCartesianCoordinate();
+        assertValidCoordinate(transformed);
+        return transformed;
+    }
+
+    public SphericCoordinate asSphericCoordinate() {
+        SphericCoordinate transformed = doAsSphericCoordinate();
+        assertValidCoordinate(transformed);
+        return transformed;
+    }
+
+    boolean isEquals(Coordinate coordinate) {
+        assertNonNull(coordinate);
+        return doIsEquals(coordinate);
+    }
+
+    /*
+     * Assertions
+     */
+
+    private static void assertValidCoordinate(Coordinate coordinate) {
+        assertNonNull(coordinate);
+        if (!coordinate.doAssertValid()) {
+            throw new IllegalStateException("Invalid Coordinate");
+        }
+    }
+
+    private static void assertNonNull(Coordinate obj) {
+        if (obj == null) {
+            throw new NullPointerException("Given coordinate was null");
+        }
+    }
 }

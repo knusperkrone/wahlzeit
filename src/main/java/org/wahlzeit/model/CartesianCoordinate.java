@@ -31,7 +31,12 @@ public class CartesianCoordinate extends Coordinate {
      */
 
     @Override
-    public boolean isEquals(Coordinate other) {
+    protected boolean doAssertValid() {
+        return true;
+    }
+
+    @Override
+    public boolean doIsEquals(Coordinate other) {
         if (this == other) {
             return true;
         }
@@ -41,12 +46,12 @@ public class CartesianCoordinate extends Coordinate {
     }
 
     @Override
-    public CartesianCoordinate asCartesianCoordinate() {
+    public CartesianCoordinate doAsCartesianCoordinate() {
         return this;
     }
 
     @Override
-    public SphericCoordinate asSphericCoordinate() {
+    public SphericCoordinate doAsSphericCoordinate() {
         double radius = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
         double theta = Math.acos(z / radius);
         double phi = Math.atan(y / x);

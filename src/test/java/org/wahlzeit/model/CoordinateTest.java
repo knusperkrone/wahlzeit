@@ -1,10 +1,15 @@
 package org.wahlzeit.model;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class CoordinateTest {
+
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
     public void testTransform() {
@@ -52,5 +57,24 @@ public class CoordinateTest {
         double actual = cartesianA.getCentralAngle(cartesianB);
         // Validate
         assertTrue(expected - actual < Coordinate.DELTA);
+    }
+
+    @Test
+    public void testAssertEqualsNull() {
+        // Prepare
+        exceptionRule.expect(NullPointerException.class);
+        exceptionRule.expectMessage("Given coordinate was null");
+        Coordinate expected = new CartesianCoordinate(3, 4, 5);
+
+        // Execute
+        expected.isEquals(null);
+    }
+
+    @Test
+    public void testAssertInvalidCoordinate() {
+        // Prepare
+        Coordinate coordinate = new SphericCoordinate(-1, -1, -1);
+        // Execute & Validate
+        assertFalse(coordinate.doAssertValid());
     }
 }

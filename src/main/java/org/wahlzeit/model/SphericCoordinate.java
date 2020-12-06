@@ -17,7 +17,12 @@ public class SphericCoordinate extends Coordinate {
      * Business methods
      */
 
-    protected double doGetCentralAngle(Coordinate coordinate) {
+    @Override
+    protected boolean doAssertValid() {
+        return radius >= 0 && theta >= 0 && phi >= 0;
+    }
+
+    public double doGetCentralAngle(Coordinate coordinate) {
         CartesianCoordinate cartesianSelf = asCartesianCoordinate();
         CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
 
@@ -39,7 +44,7 @@ public class SphericCoordinate extends Coordinate {
      */
 
     @Override
-    public CartesianCoordinate asCartesianCoordinate() {
+    public CartesianCoordinate doAsCartesianCoordinate() {
         double x = radius * Math.sin(theta) * Math.cos(phi);
         double y = radius * Math.sin(theta) * Math.sin(phi);
         double z = radius * Math.cos(theta);
@@ -47,12 +52,12 @@ public class SphericCoordinate extends Coordinate {
     }
 
     @Override
-    public SphericCoordinate asSphericCoordinate() {
+    public SphericCoordinate doAsSphericCoordinate() {
         return this;
     }
 
     @Override
-    public boolean isEquals(Coordinate other) {
+    public boolean doIsEquals(Coordinate other) {
         if (this == other) {
             return true;
         }
