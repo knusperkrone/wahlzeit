@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class SphericCoordinate extends Coordinate {
+public class SphericCoordinate implements Coordinate {
 
     private final double radius;
     private final double theta;
@@ -18,12 +18,7 @@ public class SphericCoordinate extends Coordinate {
      */
 
     @Override
-    protected boolean doAssertValid() {
-        return radius >= 0 && theta >= 0 && phi >= 0;
-    }
-
-    @Override
-    public CartesianCoordinate doAsCartesianCoordinate() {
+    public CartesianCoordinate asCartesianCoordinate() {
         double x = radius * Math.sin(theta) * Math.cos(phi);
         double y = radius * Math.sin(theta) * Math.sin(phi);
         double z = radius * Math.cos(theta);
@@ -31,17 +26,17 @@ public class SphericCoordinate extends Coordinate {
     }
 
     @Override
-    public double doGetCartesianDistance(Coordinate coordinate) {
+    public double getCartesianDistance(Coordinate coordinate) {
         return asCartesianCoordinate().getCartesianDistance(coordinate);
     }
 
     @Override
-    public SphericCoordinate doAsSphericCoordinate() {
+    public SphericCoordinate asSphericCoordinate() {
         return this;
     }
 
     @Override
-    public double doGetCentralAngle(Coordinate coordinate) {
+    public double getCentralAngle(Coordinate coordinate) {
         CartesianCoordinate cartesianSelf = asCartesianCoordinate();
         CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
 
@@ -59,7 +54,7 @@ public class SphericCoordinate extends Coordinate {
     }
 
     @Override
-    public boolean doIsEquals(Coordinate other) {
+    public boolean isEquals(Coordinate other) {
         if (this == other) {
             return true;
         }
