@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class CartesianCoordinate implements Coordinate {
+public class CartesianCoordinate extends Coordinate {
 
     private final double x;
     private final double y;
@@ -11,6 +11,20 @@ public class CartesianCoordinate implements Coordinate {
         this.y = y;
         this.z = z;
     }
+
+    /*
+     * Business methods
+     */
+
+    protected double doGetCartesianDistance(Coordinate coordinate) {
+        CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
+        return Math.sqrt(
+                Math.pow(x - cartesianOther.getX(), 2) +
+                        Math.pow(y - cartesianOther.getY(), 2) +
+                        Math.pow(z - cartesianOther.getZ(), 2)
+        );
+    }
+
 
     /*
      * Coordinate contract
@@ -32,35 +46,12 @@ public class CartesianCoordinate implements Coordinate {
     }
 
     @Override
-    public double getCartesianDistance(Coordinate coordinate) {
-        CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
-        return Math.sqrt(
-                Math.pow(x - cartesianOther.getX(), 2) +
-                        Math.pow(y - cartesianOther.getY(), 2) +
-                        Math.pow(z - cartesianOther.getZ(), 2)
-        );
-    }
-
-    @Override
     public SphericCoordinate asSphericCoordinate() {
         double radius = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
         double theta = Math.acos(z / radius);
         double phi = Math.atan(y / x);
 
         return new SphericCoordinate(radius, theta, phi);
-    }
-
-    @Override
-    public double getCentralAngle(Coordinate coordinate) {
-        return asSphericCoordinate().getCentralAngle(coordinate);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Coordinate) {
-            return isEquals((Coordinate) obj);
-        }
-        return false;
     }
 
     /*

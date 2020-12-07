@@ -1,16 +1,37 @@
 package org.wahlzeit.model;
 
-public interface Coordinate {
+public abstract class Coordinate {
 
-    double DELTA = 0.0001;
+    protected static double DELTA = 0.0001;
 
-    CartesianCoordinate asCartesianCoordinate();
+    /*
+     * Template methods
+     */
 
-    double getCartesianDistance(Coordinate coordinate);
+    public abstract CartesianCoordinate asCartesianCoordinate();
 
-    SphericCoordinate asSphericCoordinate();
+    public abstract SphericCoordinate asSphericCoordinate();
 
-    double getCentralAngle(Coordinate coordinate);
+    public abstract boolean isEquals(Coordinate coordinate);
 
-    boolean isEquals(Coordinate coordinate);
+    /*
+     * Business methods
+     */
+
+    public double getCartesianDistance(Coordinate coordinate) {
+        return asCartesianCoordinate().doGetCartesianDistance(coordinate);
+    }
+
+    public double getCentralAngle(Coordinate coordinate) {
+        return asSphericCoordinate().doGetCentralAngle(coordinate);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Coordinate) {
+            return isEquals((Coordinate) obj);
+        }
+        return false;
+    }
+
 }

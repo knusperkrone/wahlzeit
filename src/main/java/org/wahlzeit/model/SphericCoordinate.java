@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class SphericCoordinate implements Coordinate {
+public class SphericCoordinate extends Coordinate {
 
     private final double radius;
     private final double theta;
@@ -14,29 +14,10 @@ public class SphericCoordinate implements Coordinate {
     }
 
     /*
-     * Coordinate contract
+     * Business methods
      */
 
-    @Override
-    public CartesianCoordinate asCartesianCoordinate() {
-        double x = radius * Math.sin(theta) * Math.cos(phi);
-        double y = radius * Math.sin(theta) * Math.sin(phi);
-        double z = radius * Math.cos(theta);
-        return new CartesianCoordinate(x, y, z);
-    }
-
-    @Override
-    public double getCartesianDistance(Coordinate coordinate) {
-        return asCartesianCoordinate().getCartesianDistance(coordinate);
-    }
-
-    @Override
-    public SphericCoordinate asSphericCoordinate() {
-        return this;
-    }
-
-    @Override
-    public double getCentralAngle(Coordinate coordinate) {
+    protected double doGetCentralAngle(Coordinate coordinate) {
         CartesianCoordinate cartesianSelf = asCartesianCoordinate();
         CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
 
@@ -53,6 +34,23 @@ public class SphericCoordinate implements Coordinate {
         return angle;
     }
 
+    /*
+     * Coordinate contract
+     */
+
+    @Override
+    public CartesianCoordinate asCartesianCoordinate() {
+        double x = radius * Math.sin(theta) * Math.cos(phi);
+        double y = radius * Math.sin(theta) * Math.sin(phi);
+        double z = radius * Math.cos(theta);
+        return new CartesianCoordinate(x, y, z);
+    }
+
+    @Override
+    public SphericCoordinate asSphericCoordinate() {
+        return this;
+    }
+
     @Override
     public boolean isEquals(Coordinate other) {
         if (this == other) {
@@ -61,14 +59,6 @@ public class SphericCoordinate implements Coordinate {
 
         SphericCoordinate sphericOther = other.asSphericCoordinate();
         return (sphericOther.radius - radius < DELTA) && (sphericOther.theta - theta) < DELTA && (sphericOther.phi - phi) < DELTA;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Coordinate) {
-            return isEquals((Coordinate) obj);
-        }
-        return false;
     }
 
     /*
