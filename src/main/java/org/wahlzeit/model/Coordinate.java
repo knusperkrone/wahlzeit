@@ -3,6 +3,7 @@ package org.wahlzeit.model;
 public abstract class Coordinate {
 
     protected static double DELTA = 0.0001;
+    protected static double EPSILON = 0.000001;
 
     /*
      * Template methods
