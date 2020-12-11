@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class SphericCoordinate extends Coordinate {
+public class SphericCoordinate extends BaseCoordinate {
 
     private final double radius;
     private final double theta;
@@ -22,7 +22,7 @@ public class SphericCoordinate extends Coordinate {
         return radius >= 0 && theta >= 0 && phi >= 0;
     }
 
-    public double doGetCentralAngle(Coordinate coordinate) {
+    public double doGetCentralAngle(BaseCoordinate coordinate) {
         CartesianCoordinate cartesianSelf = asCartesianCoordinate();
         CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
 
@@ -57,13 +57,22 @@ public class SphericCoordinate extends Coordinate {
     }
 
     @Override
-    public boolean doIsEquals(Coordinate other) {
+    public boolean doIsEquals(BaseCoordinate other) {
         if (this == other) {
             return true;
         }
 
         SphericCoordinate sphericOther = other.asSphericCoordinate();
         return (sphericOther.radius - radius < DELTA) && (sphericOther.theta - theta) < DELTA && (sphericOther.phi - phi) < DELTA;
+    }
+
+    @Override
+    protected int doHashCode() {
+        int hash = 7;
+        hash = 31 * hash + Double.hashCode(radius);
+        hash = 31 * hash + Double.hashCode(theta);
+        hash = 31 * hash + Double.hashCode(phi);
+        return hash;
     }
 
     /*
@@ -80,5 +89,34 @@ public class SphericCoordinate extends Coordinate {
 
     public double getPhi() {
         return phi;
+    }
+
+    /*
+     * Setter
+     */
+
+    public SphericCoordinate setRadius(double newRadius) {
+        SphericCoordinate sphericCoordinate = new SphericCoordinate(newRadius, theta, phi);
+        if (!sphericCoordinate.doAssertValid()) {
+            throw new IllegalArgumentException("Given tadius was invalid: " + radius);
+        }
+        return sphericCoordinate;
+    }
+
+
+    public SphericCoordinate setTheta(double newTheta) {
+        SphericCoordinate sphericCoordinate = new SphericCoordinate(radius, newTheta, phi);
+        if (!sphericCoordinate.doAssertValid()) {
+            throw new IllegalArgumentException("Given theta was invalid: " + radius);
+        }
+        return sphericCoordinate;
+    }
+
+    public SphericCoordinate setPhi(double newPhi) {
+        SphericCoordinate sphericCoordinate = new SphericCoordinate(radius, theta, newPhi);
+        if (!sphericCoordinate.doAssertValid()) {
+            throw new IllegalArgumentException("Given phi was invalid: " + radius);
+        }
+        return sphericCoordinate;
     }
 }

@@ -1,6 +1,6 @@
 package org.wahlzeit.model;
 
-public class CartesianCoordinate extends Coordinate {
+public class CartesianCoordinate extends BaseCoordinate {
 
     private final double x;
     private final double y;
@@ -16,7 +16,7 @@ public class CartesianCoordinate extends Coordinate {
      * Business methods
      */
 
-    protected double doGetCartesianDistance(Coordinate coordinate) {
+    protected double doGetCartesianDistance(BaseCoordinate coordinate) {
         CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
         return Math.sqrt(
                 Math.pow(x - cartesianOther.getX(), 2) +
@@ -36,7 +36,22 @@ public class CartesianCoordinate extends Coordinate {
     }
 
     @Override
-    public boolean doIsEquals(Coordinate other) {
+    public CartesianCoordinate doAsCartesianCoordinate() {
+        return this;
+    }
+
+    @Override
+    public SphericCoordinate doAsSphericCoordinate() {
+        double dividerSafeX = x == 0 ? EPSILON : x;
+        double radius = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+        double theta = Math.acos(z / radius);
+        double phi = Math.atan(y / dividerSafeX);
+
+        return new SphericCoordinate(radius, theta, phi);
+    }
+
+    @Override
+    public boolean doIsEquals(BaseCoordinate other) {
         if (this == other) {
             return true;
         }
@@ -46,19 +61,14 @@ public class CartesianCoordinate extends Coordinate {
     }
 
     @Override
-    public CartesianCoordinate doAsCartesianCoordinate() {
-        return this;
+    protected int doHashCode() {
+        int hash = 7;
+        hash = 31 * hash + Double.hashCode(x);
+        hash = 31 * hash + Double.hashCode(y);
+        hash = 31 * hash + Double.hashCode(z);
+        return hash;
     }
 
-    @Override
-    public SphericCoordinate doAsSphericCoordinate() {
-        double dividerSafeX = x != 0 ? x : EPSILON;
-        double radius = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
-        double theta = Math.acos(z / radius);
-        double phi = Math.atan(y / dividerSafeX);
-
-        return new SphericCoordinate(radius, theta, phi);
-    }
 
     /*
      * Getter/Setter
@@ -76,5 +86,16 @@ public class CartesianCoordinate extends Coordinate {
         return z;
     }
 
+    public CartesianCoordinate setX(double newX) {
+        return new CartesianCoordinate(newX, y, z);
+    }
+
+    public CartesianCoordinate setY(double newY) {
+        return new CartesianCoordinate(x, newY, z);
+    }
+
+    public CartesianCoordinate setZ(double newZ) {
+        return new CartesianCoordinate(x, y, newZ);
+    }
 
 }

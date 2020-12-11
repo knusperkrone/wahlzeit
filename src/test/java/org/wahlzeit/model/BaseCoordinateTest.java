@@ -6,7 +6,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
-public class CoordinateTest {
+public class BaseCoordinateTest {
 
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
@@ -14,8 +14,8 @@ public class CoordinateTest {
     @Test
     public void testTransform() {
         // prepare
-        Coordinate cartesian = new CartesianCoordinate(3, 4, 5);
-        Coordinate spheric = new SphericCoordinate(3, 4, 5);
+        BaseCoordinate cartesian = new CartesianCoordinate(3, 4, 5);
+        BaseCoordinate spheric = new SphericCoordinate(3, 4, 5);
         // validate
         assertSame(cartesian, cartesian.asCartesianCoordinate());
         assertSame(spheric, spheric.asSphericCoordinate());
@@ -28,9 +28,9 @@ public class CoordinateTest {
     @Test
     public void testCartesianToSphericAndBack() {
         // Prepare
-        Coordinate expected = new CartesianCoordinate(3, 4, 5);
+        BaseCoordinate expected = new CartesianCoordinate(3, 4, 5);
         // Execute
-        Coordinate actual = expected.asSphericCoordinate().asCartesianCoordinate();
+        BaseCoordinate actual = expected.asSphericCoordinate().asCartesianCoordinate();
         // Validate
         assertEquals(expected, actual);
     }
@@ -39,12 +39,12 @@ public class CoordinateTest {
     public void testCartesianDistance() {
         // Prepare
         double expected = 5.196;
-        Coordinate cartesianA = new CartesianCoordinate(3, 4, 5);
-        Coordinate cartesianB = new CartesianCoordinate(6, 7, 8);
+        BaseCoordinate cartesianA = new CartesianCoordinate(3, 4, 5);
+        BaseCoordinate cartesianB = new CartesianCoordinate(6, 7, 8);
         // Execute
         double actual = cartesianA.getCartesianDistance(cartesianB);
         // Validate
-        assertTrue(expected - actual < Coordinate.DELTA);
+        assertTrue(expected - actual < BaseCoordinate.DELTA);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CoordinateTest {
         // Execute
         double actual = cartesianA.getCentralAngle(cartesianB);
         // Validate
-        assertTrue(expected - actual < Coordinate.DELTA);
+        assertTrue(expected - actual < BaseCoordinate.DELTA);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class CoordinateTest {
         // Prepare
         exceptionRule.expect(NullPointerException.class);
         exceptionRule.expectMessage("Given coordinate was null");
-        Coordinate expected = new CartesianCoordinate(3, 4, 5);
+        BaseCoordinate expected = new CartesianCoordinate(3, 4, 5);
 
         // Execute
         expected.isEquals(null);
@@ -73,7 +73,7 @@ public class CoordinateTest {
     @Test
     public void testAssertInvalidCoordinate() {
         // Prepare
-        Coordinate coordinate = new SphericCoordinate(-1, -1, -1);
+        BaseCoordinate coordinate = new SphericCoordinate(-1, -1, -1);
         // Execute & Validate
         assertFalse(coordinate.doAssertValid());
     }
