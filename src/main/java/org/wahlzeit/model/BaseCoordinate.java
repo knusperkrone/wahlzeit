@@ -2,9 +2,6 @@ package org.wahlzeit.model;
 
 public abstract class BaseCoordinate implements Coordinate {
 
-    protected static double DELTA = 0.0001;
-    protected static double EPSILON = 0.00000001;
-
     /*
      * Template methods
      */
@@ -13,7 +10,7 @@ public abstract class BaseCoordinate implements Coordinate {
 
     protected abstract SphericCoordinate doAsSphericCoordinate();
 
-    protected abstract boolean doIsEquals(BaseCoordinate coordinate);
+    protected abstract boolean doIsEquals(Coordinate coordinate);
 
     protected abstract boolean doAssertValid();
 
@@ -23,20 +20,20 @@ public abstract class BaseCoordinate implements Coordinate {
      * Business methods
      */
 
-    public double getCartesianDistance(BaseCoordinate coordinate) {
+    public double getCartesianDistance(Coordinate coordinate) {
         assertValidCoordinate(coordinate);
         return asCartesianCoordinate().doGetCartesianDistance(coordinate);
     }
 
-    public double getCentralAngle(BaseCoordinate coordinate) {
+    public double getCentralAngle(Coordinate coordinate) {
         assertValidCoordinate(coordinate);
         return asSphericCoordinate().doGetCentralAngle(coordinate);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BaseCoordinate) {
-            return isEquals((BaseCoordinate) obj);
+        if (obj instanceof Coordinate) {
+            return isEquals((Coordinate) obj);
         }
         return false;
     }
@@ -58,7 +55,7 @@ public abstract class BaseCoordinate implements Coordinate {
         return transformed;
     }
 
-    public boolean isEquals(BaseCoordinate coordinate) {
+    public boolean isEquals(Coordinate coordinate) {
         assertNonNull(coordinate);
         return doIsEquals(coordinate);
     }
@@ -67,14 +64,16 @@ public abstract class BaseCoordinate implements Coordinate {
      * Assertions
      */
 
-    private static void assertValidCoordinate(BaseCoordinate coordinate) {
+    private static void assertValidCoordinate(Coordinate coordinate) {
         assertNonNull(coordinate);
-        if (!coordinate.doAssertValid()) {
-            throw new IllegalStateException("Invalid Coordinate");
+        if (coordinate instanceof BaseCoordinate) {
+            if (!((BaseCoordinate) coordinate).doAssertValid()) {
+                throw new IllegalStateException("Invalid Coordinate");
+            }
         }
     }
 
-    private static void assertNonNull(BaseCoordinate obj) {
+    private static void assertNonNull(Coordinate obj) {
         if (obj == null) {
             throw new NullPointerException("Given coordinate was null");
         }

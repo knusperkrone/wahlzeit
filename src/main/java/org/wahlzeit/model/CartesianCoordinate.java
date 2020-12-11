@@ -16,7 +16,7 @@ public class CartesianCoordinate extends BaseCoordinate {
      * Business methods
      */
 
-    protected double doGetCartesianDistance(BaseCoordinate coordinate) {
+    protected double doGetCartesianDistance(Coordinate coordinate) {
         CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
         return Math.sqrt(
                 Math.pow(x - cartesianOther.getX(), 2) +
@@ -51,7 +51,7 @@ public class CartesianCoordinate extends BaseCoordinate {
     }
 
     @Override
-    public boolean doIsEquals(BaseCoordinate other) {
+    public boolean doIsEquals(Coordinate other) {
         if (this == other) {
             return true;
         }

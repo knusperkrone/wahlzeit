@@ -22,7 +22,7 @@ public class SphericCoordinate extends BaseCoordinate {
         return radius >= 0 && theta >= 0 && phi >= 0;
     }
 
-    public double doGetCentralAngle(BaseCoordinate coordinate) {
+    public double doGetCentralAngle(Coordinate coordinate) {
         CartesianCoordinate cartesianSelf = asCartesianCoordinate();
         CartesianCoordinate cartesianOther = coordinate.asCartesianCoordinate();
 
@@ -57,7 +57,7 @@ public class SphericCoordinate extends BaseCoordinate {
     }
 
     @Override
-    public boolean doIsEquals(BaseCoordinate other) {
+    public boolean doIsEquals(Coordinate other) {
         if (this == other) {
             return true;
         }
