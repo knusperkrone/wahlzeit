@@ -20,10 +20,16 @@
 
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.PatternInstance;
+
 /**
  * Simple value object for case ids.
  *
  */
+@PatternInstance(
+		patternName = "Sentry",
+		participants = { "CaseId", "Case" }
+)
 public class CaseId {
 	
 	/**

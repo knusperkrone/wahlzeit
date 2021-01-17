@@ -24,6 +24,7 @@ import org.wahlzeit.main.ServiceMain;
 import org.wahlzeit.services.ObjectManager;
 import org.wahlzeit.services.Persistent;
 import org.wahlzeit.services.SysLog;
+import org.wahlzeit.utils.PatternInstance;
 
 import java.io.File;
 import java.sql.PreparedStatement;
@@ -35,6 +36,10 @@ import java.util.stream.Collectors;
 /**
  * A photo manager provides access to and manages photos.
  */
+@PatternInstance(
+		patternName = "Singleton",
+		participants = { "PhotoManager" }
+)
 public abstract class PhotoManager<T extends Photo> extends ObjectManager {
 
 	/**

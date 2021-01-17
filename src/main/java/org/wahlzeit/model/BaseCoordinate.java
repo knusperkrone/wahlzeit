@@ -1,5 +1,11 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.PatternInstance;
+
+@PatternInstance(
+        patternName = "Commando Pattern",
+        participants = { "BaseCoordinate", "CartesianCoordinate", "SphericCoordinate" }
+)
 public abstract class BaseCoordinate implements Coordinate {
 
     /*

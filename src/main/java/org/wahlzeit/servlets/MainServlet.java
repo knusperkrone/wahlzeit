@@ -32,6 +32,7 @@ import javax.servlet.annotation.*;
 import org.wahlzeit.handlers.*;
 import org.wahlzeit.model.*;
 import org.wahlzeit.services.*;
+import org.wahlzeit.utils.PatternInstance;
 import org.wahlzeit.webparts.*;
 
 
@@ -40,6 +41,10 @@ import org.wahlzeit.webparts.*;
  * The main servlet class for handling incoming and outgoing requests.
  */
 @MultipartConfig // Servlet 3.0 support for file upload
+@PatternInstance(
+		patternName = "Fascade",
+		participants = "MainServlet"
+)
 public class MainServlet extends AbstractServlet {
 
 	/**
