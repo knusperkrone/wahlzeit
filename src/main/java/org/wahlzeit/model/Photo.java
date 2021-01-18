@@ -34,10 +34,6 @@ import java.sql.SQLException;
 /**
  * A photo represents a user-provided (uploaded) photo.
  */
-@PatternInstance(
-        patternName = "Serializer Pattern",
-        participants = { "Photo", "DataObject" }
-)
 public class Photo extends DataObject {
 
 	/**

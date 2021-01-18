@@ -1,5 +1,11 @@
 package org.wahlzeit.model;
 
+import org.wahlzeit.utils.PatternInstance;
+
+@PatternInstance(
+        patternName = "Compositum",
+        participants = { "Coordinate", "CartesianCoordinate", "SphericCoordinate" }
+)
 public interface Coordinate {
 
     double DELTA = 0.0001;
