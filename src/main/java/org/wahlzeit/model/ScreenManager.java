@@ -18,6 +18,7 @@ public class ScreenManager {
 
     public Screen createScreen(String device, String application) {
         assertValidScreenDevice(device);
+        assertNonNull(application);
         ScreenType type = getScreenType(device);
         return type.createInstance(application);
     }
@@ -37,6 +38,12 @@ public class ScreenManager {
     private void assertValidScreenDevice(String device) {
         if (device == null || !device.startsWith(ScreenType.BASE_TYPE)) {
             throw new AssertionError("Invalid deviceType: " + device);
+        }
+    }
+
+    private void assertNonNull(String s) {
+        if (s == null) {
+            throw  new AssertionError("Given string is null");
         }
     }
 
