@@ -21,9 +21,9 @@
 package org.wahlzeit_revisited.main;
 
 
-import org.wahlzeit_revisited.db.DatabaseConnection;
-import org.wahlzeit_revisited.db.SessionManager;
-import org.wahlzeit_revisited.db.config.ConfigDir;
+import org.wahlzeit_revisited.database.DatabaseConnection;
+import org.wahlzeit_revisited.database.SessionManager;
+import org.wahlzeit_revisited.database.config.ConfigDir;
 import org.wahlzeit_revisited.utils.FileUtil;
 import org.wahlzeit_revisited.utils.SysLog;
 

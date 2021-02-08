@@ -1,7 +1,7 @@
-package org.wahlzeit_revisited.db.repository;
+package org.wahlzeit_revisited.model.repository;
 
 import org.wahlzeit.services.SysLog;
-import org.wahlzeit_revisited.db.DatabaseConnection;
+import org.wahlzeit_revisited.database.DatabaseConnection;
 import org.wahlzeit_revisited.model.User;
 
 import java.sql.PreparedStatement;
@@ -19,36 +19,35 @@ public class UserReadRepository extends ReadRepository<User> {
 
     @Override
     protected User doFindById(DatabaseConnection dbc, Long id) throws SQLException {
-        String query = "SELECT * FROM user WHERE id == ?";
+        String query = "SELECT * FROM users WHERE id = ?";
         SysLog.logQuery(query);
 
         User result = null;
-        try (PreparedStatement stmt = dbc.getReadingStatement(query)) {
-            stmt.setLong(1, id);
+        PreparedStatement stmt = dbc.getReadingStatement(query);
+        stmt.setLong(1, id);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                if (resultSet.next()) {
-                    result = parseRow(resultSet);
-                }
+        try (ResultSet resultSet = stmt.executeQuery()) {
+            if (resultSet.next()) {
+                result = parseRow(resultSet);
             }
         }
+
 
         return result;
     }
 
     @Override
     protected List<User> doFindAll(DatabaseConnection dbc) throws SQLException {
-        String query = "SELECT * FROM user";
+        String query = "SELECT * FROM users";
         SysLog.logQuery(query);
 
         List<User> result = new ArrayList<>();
-        try (PreparedStatement stmt = dbc.getReadingStatement(query)) {
+        PreparedStatement stmt = dbc.getReadingStatement(query);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet.next()) {
-                    User foundUser = parseRow(resultSet);
-                    result.add(foundUser);
-                }
+        try (ResultSet resultSet = stmt.executeQuery()) {
+            while (resultSet.next()) {
+                User foundUser = parseRow(resultSet);
+                result.add(foundUser);
             }
         }
 
@@ -59,29 +58,26 @@ public class UserReadRepository extends ReadRepository<User> {
      * business methods
      */
 
-    protected Optional<User> findByUserNamePassword(String username, String hashedPassword) throws SQLException {
+    public Optional<User> findByUsernamePassword(String username, String plainPassword) throws SQLException {
         assertIsNonNullArgument(username);
-        assertIsNonNullArgument(hashedPassword);
-
+        assertIsNonNullArgument(plainPassword);
         DatabaseConnection dbc = getDatabaseConnection();
 
-        String query = "SELECT * FROM user WHERE name == ? AND password == ?";
+        String query = "SELECT * FROM users WHERE name = ? AND password = ?";
         SysLog.logQuery(query);
 
         User result = null;
-        try (PreparedStatement stmt = dbc.getReadingStatement(query)) {
-            stmt.setString(1, username);
-            stmt.setString(2, hashedPassword);
+        PreparedStatement stmt = dbc.getReadingStatement(query);
+        stmt.setString(1, username);
+        stmt.setString(2, plainPassword);
 
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                if (resultSet.next()) {
-                    result = parseRow(resultSet);
-                }
+        try (ResultSet resultSet = stmt.executeQuery()) {
+            if (resultSet.next()) {
+                result = parseRow(resultSet);
             }
         }
 
         return Optional.ofNullable(result);
-
     }
 
     /*

@@ -18,42 +18,48 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db.config;
+package org.wahlzeit_revisited.database.config;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
- * An interface that manages a simple key/value store.
- * Clients can get and set individual values; they can also load properties files.
- * Key names are configured during initialization and can't be changed afterwards.
- * Hence, any access using an unknown key leads to an IllegalArgumentException.
+ * A class to manage directories.
  */
-public interface Configuration {
+public class Directory {
 
     /**
      *
      */
-    boolean hasKey(String key);
+    protected String rootDir = "";
+    protected String relativeDir = "";
 
     /**
      *
      */
-    String getValue(String key) throws IllegalArgumentException;
+    public Directory(String newRootDir, String newRelativeDir) {
+        rootDir = newRootDir;
+        relativeDir = newRelativeDir;
+    }
 
     /**
      *
      */
-    void setValue(String key, String value) throws IllegalArgumentException;
+    public String asString() {
+        return rootDir + File.separator + relativeDir;
+    }
 
     /**
      *
      */
-    void loadProperties(String fileName) throws IllegalArgumentException, IOException;
+    public String getRootDir() {
+        return rootDir;
+    }
 
     /**
      *
      */
-    void loadProperties(File file) throws IOException;
+    public String getRelativeDir() {
+        return relativeDir;
+    }
 
 }

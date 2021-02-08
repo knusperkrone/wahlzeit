@@ -51,13 +51,13 @@ public class FileUtil {
 			char[] readBuffer = new char[50000];
 			int status = reader.read(readBuffer);
 
-			org.wahlzeit.services.SysLog.logSysInfo("file size", Integer.toString(status), "read file");
+			SysLog.logSysInfo("file size", Integer.toString(status), "read file");
 			
 			if (status != -1) {
 				result = new String(readBuffer, 0, status);
 			}
 		} catch(IOException ioex) {
-			org.wahlzeit.services.SysLog.logThrowable(ioex);
+			SysLog.logThrowable(ioex);
 		} finally {
 			if (reader != null) {
 				try {

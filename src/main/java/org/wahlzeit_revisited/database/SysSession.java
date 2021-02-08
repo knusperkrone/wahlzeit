@@ -18,38 +18,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db;
+package org.wahlzeit_revisited.database;
 
 
 /**
- * A manager for Session objects (user (web) sessions, agent threads, etc.) Clients can look up the session by thread.
+ * A SysSession is a context for system threads i.e. not user sessions.
  */
-public class SessionManager {
+public class SysSession extends Session {
 
     /**
      *
      */
-    protected static Session session;
-
-    /**
-     *
-     */
-    public static synchronized void setSession(Session ctx) {
-        session = ctx;
-    }
-
-    /**
-     *
-     */
-    public static void dropThreadLocalSession() {
-        session = null;
-    }
-
-    /**
-     *
-     */
-    public static DatabaseConnection getDatabaseConnection() {
-        return session.ensureDatabaseConnection();
+    public SysSession(String myName) {
+        initialize(myName);
     }
 
 }

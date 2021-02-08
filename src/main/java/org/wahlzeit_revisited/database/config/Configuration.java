@@ -18,19 +18,42 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db;
+package org.wahlzeit_revisited.database.config;
 
+import java.io.File;
+import java.io.IOException;
 
 /**
- * A SysSession is a context for system threads i.e. not user sessions.
+ * An interface that manages a simple key/value store.
+ * Clients can get and set individual values; they can also load properties files.
+ * Key names are configured during initialization and can't be changed afterwards.
+ * Hence, any access using an unknown key leads to an IllegalArgumentException.
  */
-public class SysSession extends Session {
+public interface Configuration {
 
     /**
      *
      */
-    public SysSession(String myName) {
-        initialize(myName);
-    }
+    boolean hasKey(String key);
+
+    /**
+     *
+     */
+    String getValue(String key) throws IllegalArgumentException;
+
+    /**
+     *
+     */
+    void setValue(String key, String value) throws IllegalArgumentException;
+
+    /**
+     *
+     */
+    void loadProperties(String fileName) throws IllegalArgumentException, IOException;
+
+    /**
+     *
+     */
+    void loadProperties(File file) throws IOException;
 
 }

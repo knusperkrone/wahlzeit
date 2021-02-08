@@ -1,8 +1,10 @@
 package org.wahlzeit_revisited.model;
 
-import org.wahlzeit_revisited.db.Persistent;
+import org.wahlzeit_revisited.database.Persistent;
 
-public class User implements Persistent {
+import java.security.Principal;
+
+public class User implements Persistent, Principal {
 
     private Long id;
     private String name;

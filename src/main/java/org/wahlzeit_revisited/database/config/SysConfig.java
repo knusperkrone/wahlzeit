@@ -18,7 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db.config;
+package org.wahlzeit_revisited.database.config;
 
 import jakarta.inject.Singleton;
 

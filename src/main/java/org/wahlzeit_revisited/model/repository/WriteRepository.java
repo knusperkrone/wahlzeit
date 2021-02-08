@@ -1,11 +1,11 @@
-package org.wahlzeit_revisited.db.repository;
+package org.wahlzeit_revisited.model.repository;
 
 
-import org.wahlzeit_revisited.db.DatabaseConnection;
-import org.wahlzeit_revisited.db.Persistent;
-import org.wahlzeit_revisited.db.SessionManager;
+import org.wahlzeit_revisited.database.DatabaseConnection;
+import org.wahlzeit_revisited.database.Persistent;
+import org.wahlzeit_revisited.database.SessionManager;
 
-import java.sql.*;
+import java.sql.SQLException;
 
 public abstract class WriteRepository<T extends Persistent> extends Repository<T> {
 
@@ -52,7 +52,7 @@ public abstract class WriteRepository<T extends Persistent> extends Repository<T
         DatabaseConnection conn = SessionManager.getDatabaseConnection();
         T result = doDelete(conn, toDelete);
 
-        assertNonPersistedObject(result);
+        assertIsNonNullArgument(result);
         return result;
     }
 

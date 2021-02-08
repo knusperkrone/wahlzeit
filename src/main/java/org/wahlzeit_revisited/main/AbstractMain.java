@@ -21,10 +21,10 @@
 package org.wahlzeit_revisited.main;
 
 
-import org.wahlzeit_revisited.db.config.SysConfig;
-import org.wahlzeit_revisited.db.DatabaseConnection;
-import org.wahlzeit_revisited.db.SessionManager;
-import org.wahlzeit_revisited.db.SysSession;
+import org.wahlzeit_revisited.database.config.SysConfig;
+import org.wahlzeit_revisited.database.DatabaseConnection;
+import org.wahlzeit_revisited.database.SessionManager;
+import org.wahlzeit_revisited.database.SysSession;
 
 /**
  * A superclass for a Main class for system startup and shutdown.

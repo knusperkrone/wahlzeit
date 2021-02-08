@@ -18,7 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db;
+package org.wahlzeit_revisited.database;
 
 
 import org.wahlzeit_revisited.utils.SysLog;

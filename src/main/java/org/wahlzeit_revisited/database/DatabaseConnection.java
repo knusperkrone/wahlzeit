@@ -18,14 +18,13 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db;
+package org.wahlzeit_revisited.database;
 
 import org.wahlzeit.services.SysConfig;
 import org.wahlzeit.services.SysLog;
 
 import java.sql.*;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

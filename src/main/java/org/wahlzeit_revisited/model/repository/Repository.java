@@ -1,14 +1,22 @@
-package org.wahlzeit_revisited.db.repository;
+package org.wahlzeit_revisited.model.repository;
 
-import org.wahlzeit_revisited.db.DatabaseConnection;
-import org.wahlzeit_revisited.db.Persistent;
-import org.wahlzeit_revisited.db.SessionManager;
+import org.wahlzeit_revisited.database.DatabaseConnection;
+import org.wahlzeit_revisited.database.Persistent;
+import org.wahlzeit_revisited.database.SessionManager;
 
 public abstract class Repository<T extends Persistent> {
+
+    /*
+     * getters
+     */
 
     protected DatabaseConnection getDatabaseConnection() {
         return SessionManager.getDatabaseConnection();
     }
+
+    /*
+     * asserts
+     */
 
     protected void assertNonPersistedObject(T toPersist) {
         if (toPersist.getId() != null) {

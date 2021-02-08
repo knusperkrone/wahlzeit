@@ -9,7 +9,7 @@ import org.wahlzeit_revisited.service.PhotoService;
 
 @Path("api/photo")
 @Produces(MediaType.APPLICATION_JSON)
-public class PhotoResource {
+public class PhotoResource extends AbstractResource {
 
     @Inject
     PhotoService service;

@@ -9,15 +9,17 @@ public class UserDto {
     private Long id;
     private String name;
     private String email;
+    private String password;
 
     /*
      * constructor
      */
 
-    public UserDto(Long id, String name, String email) {
+    public UserDto(Long id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
     }
 
     /*
@@ -48,4 +50,11 @@ public class UserDto {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

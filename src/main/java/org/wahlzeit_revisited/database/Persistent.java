@@ -18,48 +18,19 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db.config;
-
-import java.io.File;
+package org.wahlzeit_revisited.database;
 
 /**
- * A class to manage directories.
+ * A Persistent object is an object that can be read from and written to some storage.
+ * Also, it has a write count, which serves as a dirty flag.
  */
-public class Directory {
+public interface Persistent {
 
     /**
      *
      */
-    protected String rootDir = "";
-    protected String relativeDir = "";
+    boolean isDirty();
 
-    /**
-     *
-     */
-    public Directory(String newRootDir, String newRelativeDir) {
-        rootDir = newRootDir;
-        relativeDir = newRelativeDir;
-    }
-
-    /**
-     *
-     */
-    public String asString() {
-        return rootDir + File.separator + relativeDir;
-    }
-
-    /**
-     *
-     */
-    public String getRootDir() {
-        return rootDir;
-    }
-
-    /**
-     *
-     */
-    public String getRelativeDir() {
-        return relativeDir;
-    }
+    Long getId();
 
 }

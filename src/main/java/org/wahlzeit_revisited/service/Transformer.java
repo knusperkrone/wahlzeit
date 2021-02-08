@@ -6,7 +6,7 @@ import org.wahlzeit_revisited.model.User;
 public class Transformer {
 
     public static UserDto transform(User user) {
-        return new UserDto(user.getId(), user.getName(), user.getEmail());
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), user.getPassword());
     }
 
 }

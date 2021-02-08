@@ -1,8 +1,8 @@
-package org.wahlzeit_revisited.db.repository;
+package org.wahlzeit_revisited.model.repository;
 
 
-import org.wahlzeit_revisited.db.DatabaseConnection;
-import org.wahlzeit_revisited.db.Persistent;
+import org.wahlzeit_revisited.database.DatabaseConnection;
+import org.wahlzeit_revisited.database.Persistent;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,6 +13,7 @@ public abstract class ReadRepository<T extends Persistent> extends Repository<T>
     /*
      * template methods
      */
+
     protected abstract T doFindById(DatabaseConnection dbc, Long id) throws SQLException;
 
     protected abstract List<T> doFindAll(DatabaseConnection dbc) throws SQLException;

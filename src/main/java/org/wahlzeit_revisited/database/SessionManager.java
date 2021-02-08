@@ -18,21 +18,38 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-package org.wahlzeit_revisited.db;
+package org.wahlzeit_revisited.database;
 
-import java.sql.PreparedStatement;
 
 /**
- * A Persistent object is an object that can be read from and written to some storage.
- * Also, it has a write count, which serves as a dirty flag.
+ * A manager for Session objects (user (web) sessions, agent threads, etc.) Clients can look up the session by thread.
  */
-public interface Persistent {
+public class SessionManager {
 
     /**
      *
      */
-    boolean isDirty();
+    protected static Session session;
 
-    Long getId();
+    /**
+     *
+     */
+    public static synchronized void setSession(Session ctx) {
+        session = ctx;
+    }
+
+    /**
+     *
+     */
+    public static void dropThreadLocalSession() {
+        session = null;
+    }
+
+    /**
+     *
+     */
+    public static DatabaseConnection getDatabaseConnection() {
+        return session.ensureDatabaseConnection();
+    }
 
 }
