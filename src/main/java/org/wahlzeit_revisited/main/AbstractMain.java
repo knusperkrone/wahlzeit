@@ -52,7 +52,7 @@ public abstract class AbstractMain {
         }
 
         mainSession = new SysSession("system");
-        SessionManager.setThreadLocalSession(mainSession);
+        SessionManager.setSession(mainSession);
     }
 
 }

@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A database connection wraps an RDMBS connection object.
@@ -40,7 +41,7 @@ public class DatabaseConnection {
     /**
      *
      */
-    protected static Set<DatabaseConnection> pool = new HashSet<DatabaseConnection>();
+    protected static Set<DatabaseConnection> pool = ConcurrentHashMap.newKeySet();
 
     /**
      *
@@ -51,7 +52,7 @@ public class DatabaseConnection {
      *
      */
     public static synchronized DatabaseConnection ensureDatabaseConnection() throws SQLException {
-        DatabaseConnection result = null;
+        DatabaseConnection result;
         if (pool.isEmpty()) {
             result = new DatabaseConnection("dbc" + dbcId++);
             SysLog.logCreatedObject("DatabaseConnection", result.getName());
@@ -116,12 +117,12 @@ public class DatabaseConnection {
     /**
      *
      */
-    protected String name = null;
+    protected String name;
 
     /**
      *
      */
-    protected Connection rdbmsConnection = null;
+    protected Connection rdbmsConnection;
 
     /**
      * Map contains prepared statements retrieved by query string
@@ -135,18 +136,6 @@ public class DatabaseConnection {
     protected DatabaseConnection(String dbcName) throws SQLException {
         name = dbcName;
         rdbmsConnection = openRdbmsConnection();
-    }
-
-    /**
-     *
-     */
-    protected void finalize() {
-        try {
-            pool.remove(this); // just to be sure...
-            closeConnection(rdbmsConnection);
-        } catch (Throwable t) {
-            SysLog.logThrowable(t);
-        }
     }
 
     /**
@@ -181,7 +170,7 @@ public class DatabaseConnection {
     /**
      *
      */
-    protected PreparedStatement getReadingStatement(String stmt) throws SQLException {
+    public PreparedStatement getReadingStatement(String stmt) throws SQLException {
         PreparedStatement result = readingStatements.get(stmt);
         if (result == null) {
             result = getRdbmsConnection().prepareStatement(stmt);
@@ -195,7 +184,7 @@ public class DatabaseConnection {
     /**
      *
      */
-    protected PreparedStatement getUpdatingStatement(String stmt) throws SQLException {
+    public PreparedStatement getUpdatingStatement(String stmt) throws SQLException {
         PreparedStatement result = updatingStatements.get(stmt);
         if (result == null) {
             result = getRdbmsConnection().prepareStatement(stmt, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
@@ -206,7 +195,7 @@ public class DatabaseConnection {
         return result;
     }
 
-    /**
+    /*
      *
      */
     static {

@@ -1,5 +1,5 @@
 CREATE TABLE users (
-	id integer PRIMARY KEY,
+	id serial PRIMARY KEY,
 	name text,
 	name_as_tag text,
 	email_address text,
