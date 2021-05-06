@@ -37,4 +37,4 @@ jobs:
         run: ./gradlew test
 
       - name: Run integration tests
-        run: ./gradlew testIT
+        run: ./gradlew testIT --info
