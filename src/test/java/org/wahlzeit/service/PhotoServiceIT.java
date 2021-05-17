@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.wahlzeit.BaseModelTest;
 import org.wahlzeit.api.dto.PhotoDto;
+import org.wahlzeit.model.Photo;
+import org.wahlzeit.model.PhotoFactory;
 import org.wahlzeit.model.User;
 
 import java.io.IOException;
@@ -16,8 +18,9 @@ public class PhotoServiceIT extends BaseModelTest {
 
     @Test
     public void test_getRandomPhoto() throws SQLException, IOException {
-        // arrange
-        photoService.setupInitialPhotos();
+        // assert
+        Photo photo = photoFactory.createPhoto(buildMockImageBytes());
+        photoRepository.insert(photo);
 
         // act
         PhotoDto actualPhoto = photoService.getRandomPhoto();
